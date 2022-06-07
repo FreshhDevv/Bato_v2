@@ -10,34 +10,37 @@ class LikeController extends Controller
 {
     public function likeOrUnlike($id)
     {
-        $post = Product::find($id);
+        $product = Product::find($id);
 
-        if(!$post)
+        if(!$product)
         {
-            return response([
+            $response = [
                 'message' => 'Post not found.'
-            ], 403);
+            ];
+            return response($response, 403);
         }
 
-        $like = $post->likes()->where('user_id', auth()->user()->id)->first();
+        $like = $product->likes()->where('user_id', auth()->user()->id)->first();
 
         // if not liked then like
         if(!$like)
         {
             Like::create([
-                'post_id' => $id,
+                'product_id' => $id,
                 'user_id' => auth()->user()->id
             ]);
 
-            return response([
+            $response = [
                 'message' => 'Liked'
-            ], 200);
+            ];
+            return response($response, 200);
         }
         // else dislike it
         $like->delete();
 
-        return response([
+        $response = [
             'message' => 'Disliked'
-        ], 200);
+        ];
+        return response($response, 200);
     }
 }

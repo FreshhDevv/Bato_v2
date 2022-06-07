@@ -10,46 +10,50 @@ class CommentController extends Controller
 {
     public function index($id)
     {
-        $post = Product::find($id);
+        $product = Product::find($id);
 
-        if(!$post)
+        if(!$product)
         {
-            return response([
-                'message' => 'Post not found.'
-            ], 403);
+            $response = [
+                'message' => 'Product not found.'
+            ];
+            return response($response, 403);
         }
 
-        return response([
-            'comments' => $post->comments()->with('user:id,name,image')->get()
-        ], 200);
+        $response = [
+            'comments' => $product->comments()->with('user:id,name,image')->get(),
+        ];
+        return response($response, 200);
     }
 
     // create a comment
     public function store(Request $request, $id)
     {
-        $post = Product::find($id);
+        $product = Product::find($id);
 
-        if(!$post)
+        if(!$product)
         {
-            return response([
-                'message' => 'Post not found.'
-            ], 403);
+            $response = [
+                'message' => 'Product not found.'
+            ];
+            return response($response, 403);
         }
 
         //validate fields
-        $attrs = $request->validate([
+        $fields = $request->validate([
             'comment' => 'required|string'
         ]);
 
         Comment::create([
-            'comment' => $attrs['comment'],
-            'post_id' => $id,
+            'comment' => $fields['comment'],
+            'product_id' => $id,
             'user_id' => auth()->user()->id
         ]);
 
-        return response([
+        $response = [
             'message' => 'Comment created.'
-        ], 200);
+        ];
+        return response($response, 201);
     }
 
     // update a comment
@@ -59,30 +63,33 @@ class CommentController extends Controller
 
         if(!$comment)
         {
-            return response([
-                'message' => 'Comment not found.'
-            ], 403);
+            $response = [
+                'message' => 'Comment not found.',
+            ];
+            return response($response, 403);
         }
 
         if($comment->user_id != auth()->user()->id)
         {
-            return response([
-                'message' => 'Permission denied.'
-            ], 403);
+            $response = [
+                'message' => 'Permission denied.',
+            ];
+            return response($response, 403);
         }
 
         //validate fields
-        $attrs = $request->validate([
+        $fields = $request->validate([
             'comment' => 'required|string'
         ]);
 
         $comment->update([
-            'comment' => $attrs['comment']
+            'comment' => $fields['comment']
         ]);
 
-        return response([
+        $response = [
             'message' => 'Comment updated.'
-        ], 200);
+        ];
+        return response($response, 200);
     }
 
     // delete a comment
@@ -92,22 +99,25 @@ class CommentController extends Controller
 
         if(!$comment)
         {
-            return response([
+            $response = [
                 'message' => 'Comment not found.'
-            ], 403);
+            ];
+            return response($response, 403);
         }
 
         if($comment->user_id != auth()->user()->id)
         {
-            return response([
-                'message' => 'Permission denied.'
-            ], 403);
+            $response = [
+                'message' => 'Permission denied.',
+            ];
+            return response($response, 403);
         }
 
         $comment->delete();
 
-        return response([
+        $response = [
             'message' => 'Comment deleted.'
-        ], 200);
+        ];
+        return response($response, 200);
     }
 }

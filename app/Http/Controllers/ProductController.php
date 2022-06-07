@@ -9,49 +9,51 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return response([
+        $response = [
             'products' => Product::orderBy('created_at', 'desc')->with('user:id,name,image')->withCount('comments', 'likes')
                 ->with('likes', function ($like) {
                     return $like->where('user_id', auth()->user()->id)
-                        ->select('id', 'user_id', 'post_id')->get();
-                })
-                ->get()
-        ], 200);
+                        ->select('id', 'user_id', 'product_id')->get();
+                })->get(),
+        ];
+        return response($response, 200);
     }
 
     // get single post
     public function show($id)
     {
-        return response([
-            'product' => Product::where('id', $id)->withCount('comments', 'likes')->get()
-        ], 200);
+        $response = [
+            'product' => Product::where('id', $id)->withCount('comments', 'likes')->get(),
+        ];
+        return response($response, 200);
     }
 
-    // create a post
+    // create a product
     public function store(Request $request)
     {
         //validate fields
-        $attrs = $request->validate([
+        $fields = $request->validate([
             'body' => 'required|string'
         ]);
 
         $image = $this->saveImage($request->image, 'products');
 
         $product = Product::create([
-            'body' => $attrs['body'],
+            'body' => $fields['body'],
             'user_id' => auth()->user()->id,
             'image' => $image
         ]);
 
         // for now skip for post image
 
-        return response([
+        $response = [
             'message' => 'Product created.',
-            'post' => $product,
-        ], 200);
+            'product' => $product,
+        ];
+        return response($response, 201);
     }
 
-    // update a post
+    // update a product
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
@@ -69,45 +71,49 @@ class ProductController extends Controller
         }
 
         //validate fields
-        $attrs = $request->validate([
+        $fields = $request->validate([
             'body' => 'required|string'
         ]);
 
         $product->update([
-            'body' =>  $attrs['body']
+            'body' =>  $fields['body']
         ]);
 
-        // for now skip for post image
+        // for now skip for product image
 
-        return response([
+        $response = [
             'message' => 'Product updated.',
             'product' => $product
-        ], 200);
+        ];
+        return response($response, 200);
     }
 
-    //delete post
+    //delete product
     public function destroy($id)
     {
         $product = Product::find($id);
 
         if (!$product) {
-            return response([
-                'message' => 'Product not found.'
-            ], 403);
+            $response = [
+                'message' => 'Product not found.',
+            ];
+            return response($response, 403);
         }
 
         if ($product->user_id != auth()->user()->id) {
-            return response([
+            $response = [
                 'message' => 'Permission denied.'
-            ], 403);
+            ];
+            return response($response, 403);
         }
 
         $product->comments()->delete();
         $product->likes()->delete();
         $product->delete();
 
-        return response([
+        $response = [
             'message' => 'Product deleted.'
-        ], 200);
+        ];
+        return response($response, 200);
     }
 }
