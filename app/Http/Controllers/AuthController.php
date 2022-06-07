@@ -83,4 +83,27 @@ class AuthController extends Controller
 
         return response($response, 200);
     }
+
+    public function update(Request $request)
+    {
+        $fields = $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        $image = $this->saveImage($request->image, 'products');
+
+        $user = auth()->user();
+        $user->update([
+            'name' => $fields['name'],
+            'image' => $image,
+        ]);
+
+        // for now skip for product image
+
+        $response = [
+            'message' => 'Profile updated.',
+            'user' => auth()->user(),
+        ];
+        return response($response, 200);
+    }
 }

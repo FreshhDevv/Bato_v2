@@ -11,6 +11,7 @@ class ProductController extends Controller
     {
         $response = [
             'products' => Product::orderBy('created_at', 'desc')->with('user:id,name,image')->withCount('comments', 'likes')
+            
                 ->with('likes', function ($like) {
                     return $like->where('user_id', auth()->user()->id)
                         ->select('id', 'user_id', 'product_id')->get();
@@ -88,7 +89,7 @@ class ProductController extends Controller
         return response($response, 200);
     }
 
-    //delete product
+    //delete product  
     public function destroy($id)
     {
         $product = Product::find($id);
