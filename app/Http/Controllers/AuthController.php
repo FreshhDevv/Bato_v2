@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -43,7 +44,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        // Check Number
+        // Check Email
         $user = User::where('email', $fields['email'])->first();
 
         // Check Password
@@ -92,11 +93,8 @@ class AuthController extends Controller
 
         $image = $this->saveImage($request->image, 'products');
 
-        $user = auth()->user();
-        $user->update([
-            'name' => $fields['name'],
-            'image' => $image,
-        ]);
+        
+        DB::table('users')->where('id', auth()->user()->id)->update(['name' => $fields['name'], 'image' => $image]);
 
         // for now skip for product image
 

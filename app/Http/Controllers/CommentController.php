@@ -53,7 +53,7 @@ class CommentController extends Controller
         $response = [
             'message' => 'Comment created.'
         ];
-        return response($response, 201);
+        return response($response, 200);
     }
 
     // update a comment

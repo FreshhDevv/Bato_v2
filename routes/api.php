@@ -28,30 +28,30 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // User
     Route::get('/user', [AuthController::class, 'user']);
 
-    Route::post('/user/update', [AuthController::class, 'update']);
+    Route::put('/user', [AuthController::class, 'update']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Post
-    Route::get('/products', [ProductController::class, 'index']); // all posts
+    Route::get('/posts', [ProductController::class, 'index']); // all posts
 
-    Route::post('/add/products', [ProductController::class, 'store']); // create post
+    Route::post('/posts', [ProductController::class, 'store']); // create post
 
-    Route::get('/products/{id}', [ProductController::class, 'show']); // get single post
+    Route::get('/posts/{id}', [ProductController::class, 'show']); // get single post
 
-    Route::post('/update/products/{id}', [ProductController::class, 'update']); // update post
+    Route::put('/posts/{id}', [ProductController::class, 'update']); // update post
 
-    Route::delete('/delete/products/{id}', [ProductController::class, 'destroy']); // delete post
+    Route::delete('/posts/{id}', [ProductController::class, 'destroy']); // delete post 
 
     // Comment
-    Route::get('/products/{id}/comments', [CommentController::class, 'index']); // all comments of a post
+    Route::get('/posts/{id}/comments', [CommentController::class, 'index']); // all comments of a post
 
-    Route::post('/add/products/{id}/comments', [CommentController::class, 'store']); // create comment on a post
+    Route::post('/posts/{id}/comments', [CommentController::class, 'store']); // create comment on a post
 
-    Route::put('/update/comments/{id}', [CommentController::class, 'update']); // update a comment
+    Route::put('/comments/{id}', [CommentController::class, 'update']); // update a comment
 
-    Route::delete('/delete/comments/{id}', [CommentController::class, 'destroy']); // delete a comment
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']); // delete a comment
 
     // Like
-    Route::post('/products/{id}/likes', [LikeController::class, 'likeOrUnlike']); // like or dislike back a post
+    Route::post('/posts/{id}/likes', [LikeController::class, 'likeOrUnlike']); // like or dislike back a post
 });
