@@ -91,7 +91,7 @@ class AuthController extends Controller
             'name' => 'required|string',
         ]);
 
-        $image = $this->saveImage($request->image, 'products');
+        $image = $this->saveImage($request->image, 'profiles');
 
         
         DB::table('users')->where('id', auth()->user()->id)->update(['name' => $fields['name'], 'image' => $image]);

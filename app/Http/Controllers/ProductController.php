@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -34,8 +35,14 @@ class ProductController extends Controller
     {
         //validate fields
         $fields = $request->validate([
-            'body' => 'required|string'
+            'body' => 'required|string',
+            // 'image' => 'nullable'
         ]);
+
+        // $image = $request->file('image');
+        // $name_gen = hexdec(uniqid());
+        // $image->save('upload/products' . $name_gen);
+        // $save_url = 'upload/products' . $name_gen;
 
         $image = $this->saveImage($request->image, 'products');
 

@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // Post
     Route::get('/posts', [ProductController::class, 'index']); // all posts
 
-    Route::post('/posts', [ProductController::class, 'store']); // create post
+    Route::post('/posts/add', [ProductController::class, 'store']); // create post
 
     Route::get('/posts/{id}', [ProductController::class, 'show']); // get single post
 
